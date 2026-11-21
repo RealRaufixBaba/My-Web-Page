@@ -408,7 +408,10 @@
   if (boltBtn) boltBtn.addEventListener("click", () => strike(true));
 
   window.addEventListener("keydown", (e) => {
+    const tag = (e.target && e.target.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea") return;   // form yazarken tetiklenmesin
     if (e.key === "l" || e.key === "L") strike(true);
+    if (e.key === "Escape") hideHint();
   });
 
   /* ---------------------------------------------------------------- imleç ışığı + tilt */

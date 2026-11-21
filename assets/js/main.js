@@ -118,7 +118,7 @@
   }
 
   function startStory() {
-    if (storyStarted) return;
+    if (storyStarted || storyCancelled) return;
     storyStarted = true;
 
     if (reduceMotion || !storyParas.length) {

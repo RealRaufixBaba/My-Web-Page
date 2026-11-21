@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RaufixBaba — Yazılımcı / Bio</title>
+
+<meta name="description" content="RaufixBaba — 4 yıldır kod yazan, Android ve web projeleri geliştiren, Minecraft modlayan yazılımcı. Bio, yetenekler ve iletişim." />
+<meta name="author" content="RaufixBaba" />
+<meta name="theme-color" content="#05060f" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="RaufixBaba — Yazılımcı Bio" />
+<meta property="og:description" content="4 yıl, 10+ dil, Android + Web + Minecraft modlama. 7/24 kod modunda." />
+<meta property="og:image" content="https://realraufixbaba.github.io/My-Web-Page/assets/img/avatar.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<!-- ================= ARKA PLAN KATMANLARI ================= -->
+<div class="bg" aria-hidden="true">
+  <img class="bg__gif" src="assets/img/bg-code-rain.gif" alt="" />
+  <div class="bg__grid"></div>
+  <div class="bg__vignette"></div>
+  <div class="bg__scan"></div>
+  <div class="bg__noise"></div>
+</div>
+
+<div class="lightning" id="lightning" aria-hidden="true">
+  <div class="lightning__flash" id="lightningFlash"></div>
+  <svg class="lightning__svg" id="lightningSvg" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+</div>
+
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- ================= MÜZİK ÇALARI ================= -->
+<audio id="themeAudio" src="assets/audio/coder-theme.mp3" loop preload="auto"></audio>
+
+<div class="player" id="player">
+  <button class="player__btn" id="musicBtn" type="button" aria-label="Müziği aç / kapat" aria-pressed="false">
+    <span class="player__icon" id="musicIcon">▶</span>
+  </button>
+  <div class="player__meta">
+    <span class="player__title">coder-theme.mp3</span>
+    <span class="player__sub">8-bit · 132 BPM · loop</span>
+  </div>
+  <div class="player__eq" id="playerEq" aria-hidden="true">
+    <i></i><i></i><i></i><i></i><i></i>
+  </div>
+  <input class="player__vol" id="volRange" type="range" min="0" max="100" value="45" aria-label="Ses seviyesi" />
+</div>
+
+<div class="sound-hint" id="soundHint" role="status">
+  <span class="sound-hint__pulse"></span>
+  Sesi aç, kod moduna gir
+  <button class="sound-hint__close" id="hintClose" type="button" aria-label="Kapat">×</button>
+</div>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="#top">
+      <span class="nav__mark">&lt;/&gt;</span>
+      <span class="nav__name">raufix<span>baba</span></span>
+    </a>
+    <nav class="nav__links" aria-label="Sayfa içi menü">
+      <a href="#hakkimda" data-nav>Hakkımda</a>
+      <a href="#yetenekler" data-nav>Yetenek</a>
+      <a href="#projeler" data-nav>Projeler</a>
+      <a href="#yolculuk" data-nav>Yolculuk</a>
+      <a href="#iletisim" data-nav>İletişim</a>
+    </nav>
+    <a class="nav__gh" href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">
+      <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      <span>GitHub</span>
+    </a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="hero">
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <div class="badge">
+          <span class="badge__dot"></span>
+          <span>7/24 KOD MODUNDA</span>
+          <span class="badge__sep">/</span>
+          <span class="badge__clock" id="clock">--:--:--</span>
+          <span class="badge__sep">/</span>
+          <span class="badge__loc">İST</span>
+        </div>
+
+        <h1 class="hero__title glitch" data-text="RAUFIXBABA">
+          <span>RAUFIX</span><span class="hero__title-accent">BABA</span>
+        </h1>
+
+        <p class="hero__role">
+          <span class="hero__prompt">&gt;</span>
+          <span id="typed" class="hero__typed"></span><span class="hero__caret" aria-hidden="true"></span>
+        </p>
+
+        <p class="hero__lead">
+          4 yıldır klavyenin başından kalkmadan kod yazıyorum. Android, web ve Minecraft modlama
+          üçgeninde takılıyorum. Denk olan kimse yok — düşmanlarım prim kasıyor <span class="mono">:d</span>
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#hakkimda">
+            <span>Hikayemi oku</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn--ghost" href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            <span>GitHub'da gör</span>
+          </a>
+          <button class="btn btn--music" id="heroMusicBtn" type="button">
+            <span class="btn__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span id="heroMusicLabel">Müziği başlat</span>
+          </button>
+        </div>
+
+        <ul class="hero__stats">
+          <li><b data-count="4" data-suffix="+">0</b><span>yıl deneyim</span></li>
+          <li><b data-count="10" data-suffix="+">0</b><span>programlama dili</span></li>
+          <li><b data-count="3" data-suffix="">0</b><span>ana alan</span></li>
+          <li><b data-count="0" data-suffix="">0</b><span>denk rakip</span></li>
+        </ul>
+      </div>
+
+      <aside class="hero__side">
+        <div class="avatar-card" data-tilt>
+          <div class="avatar-card__glow"></div>
+          <img class="avatar-card__img" src="assets/img/avatar.jpg" alt="RaufixBaba — neon ışıklı yazılımcı avatarı" width="900" height="900" />
+          <div class="avatar-card__scan"></div>
+          <div class="avatar-card__tag"><span class="dot"></span> online · 7/24</div>
+        </div>
+
+        <div class="terminal" aria-label="Terminal çıktısı">
+          <div class="terminal__bar">
+            <span class="terminal__dots"><i></i><i></i><i></i></span>
+            <span class="terminal__title">raufix@baba: ~/whoami</span>
+          </div>
+          <pre class="terminal__body" id="terminalBody"></pre>
+        </div>
+      </aside>
+    </div>
+
+    <a class="hero__scroll" href="#hakkimda" aria-label="Aşağı kaydır">
+      <span>scroll</span>
+      <span class="hero__scroll-line"></span>
+    </a>
+  </section>
+
+  <!-- ================= HAKKIMDA ================= -->
+  <section class="section" id="hakkimda">
+    <div class="container">
+      <header class="section__head reveal">
+        <p class="section__kicker mono">01 — hakkımda</p>
+        <h2 class="section__title">Kod benim için hobi değil, <span class="accent">yaşam biçimi</span>.</h2>
+        <p class="section__sub">Kısa hikaye: 4 yıl, sayısız kırık build, tonlarca kahve ve hiç bitmeyen bir merak.</p>
+      </header>
+
+      <div class="about">
+        <div class="about__text reveal">
+          <p>
+            Merhaba, ben <b>RaufixBaba</b>. Bundan <b>4 yıl önce</b> “bu buton nasıl çalışıyor?” sorusuyla
+            başladım; bugün aynı soruyu Android servislerinin arka planında, PHP endpoint'lerinde ve
+            Minecraft'ın bytecode'una kadar her yerde soruyorum. Öğrenmeyi sevdiğim için tek bir dile
+            bağlı kalmadım: <b>Java, Kotlin, JavaScript, PHP, Python, C#, Lua, SQL, HTML/CSS</b> derken
+            birden fazla dilde ürün çıkarabilen bir noktaya geldim.
+          </p>
+          <p>
+            Asıl alanlarım <b>Android</b> ve <b>web</b>. Bir tarafta APK'yı derleyip sahaya sürüyorum,
+            diğer tarafta arayüzü pixel pixel oturttuğum siteler yapıyorum. Boş kaldığımda ise
+            <b>Minecraft modlama</b> devreye giriyor: Forge/Fabric tarafında modlar, oyun içi mekanikler
+            ve sunucu tarafı eklentiler.
+          </p>
+          <p>
+            Kısaca: <b>denk olan hiç kimse yok</b>. Ben bu işi prim için yapmıyorum; zaten
+            <b>düşmanlarım prim kasıyor</b> <span class="mono">:d</span>
+          </p>
+
+          <div class="about__chips">
+            <span class="chip">Android</span>
+            <span class="chip">Web &amp; Backend</span>
+            <span class="chip">Minecraft Modding</span>
+            <span class="chip">UI / UX</span>
+            <span class="chip">Reverse Engineering</span>
+            <span class="chip">7/24 Debug</span>
+          </div>
+        </div>
+
+        <div class="about__side">
+          <blockquote class="quote reveal">
+            <span class="quote__mark">“</span>
+            <p>Kod yazmak yetenek işi değil, inat işi. Ben inatçıyım.</p>
+            <footer>— RaufixBaba</footer>
+          </blockquote>
+
+          <div class="facts reveal">
+            <div class="facts__row"><span>Aktivite</span><b>gece 03:00 compile</b></div>
+            <div class="facts__row"><span>Favori komut</span><b class="mono">git push --force</b></div>
+            <div class="facts__row"><span>Yakıt</span><b>kahve + 8-bit müzik</b></div>
+            <div class="facts__row"><span>Panik anı</span><b class="mono">:wq</b></div>
+            <div class="facts__row"><span>Durum</span><b class="ok">kod modunda</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= YETENEKLER ================= -->
+  <section class="section" id="yetenekler">
+    <div class="container">
+      <header class="section__head reveal">
+        <p class="section__kicker mono">02 — yetenekler</p>
+        <h2 class="section__title">Araç çantası <span class="accent">dolu</span>.</h2>
+        <p class="section__sub">Diller, platformlar ve “bir şekilde çalışıyor” dediğim şeyler.</p>
+      </header>
+
+      <div class="skills">
+        <div class="skills__bars reveal">
+          <div class="bar" data-value="93">
+            <div class="bar__head"><span>Android (Java / Kotlin)</span><b>93%</b></div>
+            <div class="bar__track"><i></i></div>
+          </div>
+          <div class="bar" data-value="90">
+            <div class="bar__head"><span>Web (HTML / CSS / JS)</span><b>90%</b></div>
+            <div class="bar__track"><i></i></div>
+          </div>
+          <div class="bar" data-value="86">
+            <div class="bar__head"><span>Minecraft Modding (Forge / Fabric)</span><b>86%</b></div>
+            <div class="bar__track"><i></i></div>
+          </div>
+          <div class="bar" data-value="84">
+            <div class="bar__head"><span>PHP &amp; Backend</span><b>84%</b></div>
+            <div class="bar__track"><i></i></div>
+          </div>
+          <div class="bar" data-value="80">
+            <div class="bar__head"><span>Python &amp; Otomasyon</span><b>80%</b></div>
+            <div class="bar__track"><i></i></div>
+          </div>
+          <div class="bar" data-value="76">
+            <div class="bar__head"><span>UI / UX &amp; Tasarım</span><b>76%</b></div>
+            <div class="bar__track"><i></i></div>
+          </div>
+        </div>
+
+        <div class="skills__side">
+          <div class="stack reveal">
+            <h3 class="stack__title mono">// diller &amp; araçlar</h3>
+            <ul class="stack__list">
+              <li>Java</li><li>Kotlin</li><li>JavaScript</li><li>TypeScript</li>
+              <li>PHP</li><li>Python</li><li>C#</li><li>Lua</li>
+              <li>SQL</li><li>HTML5</li><li>CSS3</li><li>Bash</li>
+              <li>Git</li><li>Gradle</li><li>Node.js</li><li>MySQL</li>
+              <li>Forge</li><li>Fabric</li>
+            </ul>
+          </div>
+          <div class="cards-mini">
+            <article class="mini reveal">
+              <span class="mini__icon">⚡</span>
+              <h4>Hızlı öğrenme</h4>
+              <p>Yeni dil mi? Dokümanı okur, örneği yazar, ertesi gün ürün çıkarırım.</p>
+            </article>
+            <article class="mini reveal">
+              <span class="mini__icon">🛠️</span>
+              <h4>Uçtan uca</h4>
+              <p>Fikirden yayına: tasarım, kod, build, deploy ve sonrası.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROJELER ================= -->
+  <section class="section" id="projeler">
+    <div class="container">
+      <header class="section__head reveal">
+        <p class="section__kicker mono">03 — projeler</p>
+        <h2 class="section__title">Üç cephede <span class="accent">savaş</span>.</h2>
+        <p class="section__sub">Android, web ve Minecraft. Hepsi aynı ellerden çıkıyor.</p>
+      </header>
+
+      <div class="projects">
+        <article class="project reveal" data-tilt>
+          <div class="project__top">
+            <span class="project__icon project__icon--android">
+              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M17.6 9.5l1.4-2.4a.4.4 0 0 0-.7-.4l-1.4 2.5A9.6 9.6 0 0 0 12 8.4c-1.8 0-3.5.5-4.9 1.3L5.7 7.2a.4.4 0 0 0-.7.4l1.4 2.4A7.9 7.9 0 0 0 2.5 17h19a7.9 7.9 0 0 0-3.9-7.5ZM7.5 14.6a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Zm9 0a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z"/></svg>
+            </span>
+            <span class="project__tag mono">android</span>
+          </div>
+          <h3>Android uygulamaları</h3>
+          <p>
+            Java ve Kotlin ile native uygulamalar. Material 3 arayüzler, Room veritabanı,
+            REST entegrasyonları, arka plan servisleri ve imzalı APK çıktısı.
+          </p>
+          <ul class="project__list">
+            <li>Kotlin + Jetpack</li>
+            <li>REST / JSON API</li>
+            <li>Play Store'a hazır build</li>
+          </ul>
+          <div class="project__foot">
+            <span class="project__status"><i></i> aktif geliştirme</span>
+            <a href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </article>
+
+        <article class="project reveal" data-tilt>
+          <div class="project__top">
+            <span class="project__icon project__icon--web">
+              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" d="M3 8.5h18"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="m9 13-2 2 2 2m6-4 2 2-2 2"/></svg>
+            </span>
+            <span class="project__tag mono">web</span>
+          </div>
+          <h3>Web siteleri &amp; backend</h3>
+          <p>
+            Bu sayfa da dahil: HTML, CSS, JS ve PHP ile hızlı, hafif ve göze hitap eden işler.
+            Responsive tasarım, animasyonlar, form işleme ve API bağlantıları.
+          </p>
+          <ul class="project__list">
+            <li>Responsive + erişilebilir</li>
+            <li>PHP form &amp; mail akışı</li>
+            <li>SSS hızına odaklı build</li>
+          </ul>
+          <div class="project__foot">
+            <span class="project__status"><i></i> canlıda</span>
+            <a href="https://github.com/RealRaufixBaba/My-Web-Page" target="_blank" rel="noopener">Kaynak ↗</a>
+          </div>
+        </article>
+
+        <article class="project reveal" data-tilt>
+          <div class="project__top">
+            <span class="project__icon project__icon--mc">
+              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 2 3 7v10l9 5 9-5V7l-9-5Zm0 2.3 6.4 3.6L12 11.5 5.6 7.9 12 4.3ZM5 9.6l6 3.4v6.9l-6-3.3V9.6Zm8 10.3V13l6-3.4v7L13 19.9Z"/></svg>
+            </span>
+            <span class="project__tag mono">minecraft</span>
+          </div>
+          <h3>Minecraft modları</h3>
+          <p>
+            Forge ve Fabric tarafında mod geliştirme; yeni eşyalar, mekanikler, GUI'ler ve
+            sunucu tarafı eklentiler. Oyunun içine kod yazmak ayrı bir keyif.
+          </p>
+          <ul class="project__list">
+            <li>Forge / Fabric</li>
+            <li>Custom mekanikler</li>
+            <li>Config &amp; optimizasyon</li>
+          </ul>
+          <div class="project__foot">
+            <span class="project__status"><i></i> mod atölyesi</span>
+            <a href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= YOLCULUK ================= -->
+  <section class="section" id="yolculuk">
+    <div class="container">
+      <header class="section__head reveal">
+        <p class="section__kicker mono">04 — yolculuk</p>
+        <h2 class="section__title">4 yılda <span class="accent">nereden nereye</span>.</h2>
+        <p class="section__sub">Kronolojik değil, ama gerçek.</p>
+      </header>
+
+      <ol class="timeline">
+        <li class="timeline__item reveal">
+          <span class="timeline__year mono">2022</span>
+          <div class="timeline__card">
+            <h3>İlk satır kod</h3>
+            <p>HTML ve CSS ile başladım. “Bu buton neden ortalanmıyor?” sorusu beni içine çekti.</p>
+          </div>
+        </li>
+        <li class="timeline__item reveal">
+          <span class="timeline__year mono">2023</span>
+          <div class="timeline__card">
+            <h3>Android'e geçiş</h3>
+            <p>Java ile ilk uygulamamı yazdım, Kotlin'e geçtim. Activity, fragment, intent derken APK çıktı.</p>
+          </div>
+        </li>
+        <li class="timeline__item reveal">
+          <span class="timeline__year mono">2024</span>
+          <div class="timeline__card">
+            <h3>Web + backend</h3>
+            <p>JavaScript ve PHP ile dinamik siteler, formlar, veritabanı bağlantıları. İlk deploy heyecanı.</p>
+          </div>
+        </li>
+        <li class="timeline__item reveal">
+          <span class="timeline__year mono">2025</span>
+          <div class="timeline__card">
+            <h3>Minecraft modlama</h3>
+            <p>Forge/Fabric ile mod yazmaya başladım. Oyunun içine kendi kurallarımı koydum.</p>
+          </div>
+        </li>
+        <li class="timeline__item timeline__item--now reveal">
+          <span class="timeline__year mono">2026</span>
+          <div class="timeline__card">
+            <h3>Şimdi: 7/24 kod</h3>
+            <p>Android, web ve mod projeleri paralel gidiyor. Durmak yok — sadece compile &amp; push.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= İLETİŞİM ================= -->
+  <section class="section" id="iletisim">
+    <div class="container">
+      <header class="section__head reveal">
+        <p class="section__kicker mono">05 — iletişim</p>
+        <h2 class="section__title">Bir proje mi var? <span class="accent">Yaz</span>.</h2>
+        <p class="section__sub">Sorular, iş birlikleri ve “bu nasıl yapıldı?” mesajları için buradayım.</p>
+      </header>
+
+      <div class="contact">
+        <div class="contact__info reveal">
+          <a class="contact__link" href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">
+            <span class="contact__ico">
+              <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            </span>
+            <span class="contact__txt"><b>GitHub</b><i>@RealRaufixBaba</i></span>
+            <span class="contact__arrow">↗</span>
+          </a>
+
+          <a class="contact__link" href="https://github.com/RealRaufixBaba/My-Web-Page" target="_blank" rel="noopener">
+            <span class="contact__ico">⌘</span>
+            <span class="contact__txt"><b>Bu sitenin kaynağı</b><i>My-Web-Page / main</i></span>
+            <span class="contact__arrow">↗</span>
+          </a>
+
+          <div class="contact__note">
+            <span class="contact__note-dot"></span>
+            <p>Genelde 24 saat içinde dönüyorum. Gece yazarsan daha hızlı <span class="mono">:d</span></p>
+          </div>
+        </div>
+
+        <form class="form reveal" id="contactForm" action="php/contact.php" method="post" novalidate>
+          <div class="form__row">
+            <label class="field">
+              <span>Adın</span>
+              <input type="text" name="name" id="fName" placeholder="Raufix hayranı #1" maxlength="60" required />
+            </label>
+            <label class="field">
+              <span>E-posta</span>
+              <input type="email" name="email" id="fEmail" placeholder="sen@ornek.com" maxlength="120" required />
+            </label>
+          </div>
+          <label class="field">
+            <span>Mesaj</span>
+            <textarea name="message" id="fMessage" rows="5" placeholder="Selam, bir fikrim var..." maxlength="1200" required></textarea>
+          </label>
+          <div class="form__foot">
+            <button class="btn btn--primary" type="submit" id="formSubmit">
+              <span>Mesajı gönder</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m4 12 16-8-6 16-2-6-8-2Z"/></svg>
+            </button>
+            <p class="form__status" id="formStatus" role="status"></p>
+          </div>
+          <p class="form__hint mono">not: GitHub Pages statik olduğu için form, PHP destekleyen sunucuda mail atar. Statikte mesajı GitHub issue'ya çevirir.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="mono">© <span id="year">2026</span> RaufixBaba — <span class="accent">7/24</span> kod modunda.</p>
+    <p class="footer__meta mono">html · css · js · php · <button class="linky" id="boltBtn" type="button">şimşek çak ⚡</button></p>
+    <p class="footer__meta mono">made with ☕ + 🎧</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>404 — sayfa bulunamadı | RaufixBaba</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet" />
+<style>
+  :root { --cyan:#2ff0d6; --violet:#a06cff; --ink:#eaf6ff; --muted:#9aa9c2; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 28px;
+    background: #05060f; color: var(--ink); font-family: "JetBrains Mono", ui-monospace, monospace;
+    overflow: hidden;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(900px 600px at 18% 12%, rgba(47,240,214,.16), transparent 62%),
+      radial-gradient(900px 700px at 85% 88%, rgba(160,108,255,.20), transparent 62%),
+      repeating-linear-gradient(to bottom, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
+  }
+  .card {
+    position: relative; z-index: 1; width: min(620px, 100%);
+    border: 1px solid rgba(255,255,255,.16); border-radius: 22px;
+    background: rgba(9,12,28,.78); backdrop-filter: blur(16px);
+    box-shadow: 0 30px 80px rgba(0,0,0,.6); overflow: hidden;
+  }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .bar i { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+  .bar i:nth-child(2) { background: #febc2e; }
+  .bar i:nth-child(3) { background: #28c840; }
+  .bar span { margin-left: 8px; font-size: 11px; color: #6d7a94; }
+  .body { padding: 34px 30px 30px; }
+  h1 {
+    margin: 0; font-family: "Space Grotesk", sans-serif; font-size: clamp(3.4rem, 12vw, 5.4rem);
+    line-height: .9; letter-spacing: -.05em;
+    background: linear-gradient(100deg, var(--cyan), #9cf9ea 30%, var(--violet) 80%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  p { color: var(--muted); line-height: 1.8; font-size: 13.5px; }
+  code { color: var(--cyan); }
+  a.btn {
+    display: inline-flex; gap: 8px; margin-top: 18px; padding: 12px 20px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--cyan), #b7fff2); color: #04120f;
+    font-weight: 700; font-size: 13px; text-decoration: none; font-family: "Space Grotesk", sans-serif;
+  }
+  a.btn:hover { filter: brightness(1.06); }
+  .bolt { color: var(--violet); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="bar"><i></i><i></i><i></i><span>raufix@baba: ~/404</span></div>
+    <div class="body">
+      <h1>404</h1>
+      <p><code>$ cat sayfa.html</code><br />
+        cat: sayfa.html: No such file or directory <span class="bolt">⚡</span><br />
+        Aradığın sayfa ya taşındı ya da hiç var olmadı. Panik yok, ana sayfa yerinde.</p>
+      <a class="btn" href="/My-Web-Page/">← Ana sayfaya dön</a>
+    </div>
+  </div>
+</body>
+</html>

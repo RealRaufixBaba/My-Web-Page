@@ -78,7 +78,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: var(--bg);
+  background: #05060f url("../img/bg-poster.jpg") center / cover no-repeat;
 }
 
 .bg__gif {

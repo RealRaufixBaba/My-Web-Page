@@ -1,150 +1,161 @@
 #!/usr/bin/env python3
-"""RaufixBaba bio sitesi icin 8-bit chiptune tema ureticisi.
-Kullanim: python3 scripts/make_music.py  ->  assets/audio/coder-theme.mp3
+"""Olgun/dark tema icin lo-fi enstrumantal parca.
+80 BPM, Am9 - Fmaj7 - Cmaj7 - G6, yumusak pad + sine bas + firça davul + vinil hisi.
+Kullanim: python3 scripts/make_music.py -> assets/audio/night-build.mp3
 """
-import math, os, struct, wave
+import os
 import numpy as np
 import lameenc
 
 SR = 44100
-BPM = 132.0
+BPM = 80.0
 BEAT = 60.0 / BPM
-BAR = 4 * BEAT
-BARS = 16
+BAR = 4 * BEAT          # 3.0 sn
+BARS = 16               # 48 sn
 DUR = BARS * BAR
 N = int(SR * DUR)
-
-def t_axis(n):
-    return np.arange(n) / SR
-
-def adsr(n, a=0.005, d=0.06, s=0.6, r=0.02):
-    a_n = max(1, int(a * SR)); d_n = max(1, int(d * SR)); r_n = max(1, int(r * SR))
-    env = np.ones(n) * s
-    a_n = min(a_n, n)
-    env[:a_n] = np.linspace(0, 1, a_n, endpoint=False)
-    d_end = min(n, a_n + d_n)
-    if d_end > a_n:
-        env[a_n:d_end] = np.linspace(1, s, d_end - a_n, endpoint=False)
-    rel = min(n, r_n)
-    env[-rel:] *= np.linspace(1, 0, rel)
-    return env
-
-def phase(freq, n, vib=0.0):
-    t = t_axis(n)
-    f = freq * (1.0 + vib * np.sin(2 * np.pi * 5.2 * t))
-    return 2 * np.pi * np.cumsum(f) / SR
-
-def square(freq, n, duty=0.5, **kw):
-    ph = phase(freq, n)
-    return np.where((ph / (2 * np.pi)) % 1.0 < duty, 1.0, -1.0) * adsr(n, **kw)
-
-def triangle(freq, n, **kw):
-    ph = (phase(freq, n) / (2 * np.pi)) % 1.0
-    return (4 * np.abs(ph - 0.5) - 1) * adsr(n, **kw)
-
-def saw(freq, n, **kw):
-    ph = (phase(freq, n) / (2 * np.pi)) % 1.0
-    return (2 * ph - 1) * adsr(n, **kw)
-
-def noise_hit(n, decay=0.05, cutoff=0.6):
-    rng = np.random.default_rng(7)
-    x = rng.standard_normal(n)
-    # basit tek kutuplu lowpass
-    y = np.zeros(n); acc = 0.0
-    for i in range(n):
-        acc += cutoff * (x[i] - acc)
-        y[i] = acc
-    env = np.exp(-np.arange(n) / (SR * decay))
-    return y * env
-
-def add(buf, sig, start):
-    end = start + len(sig)
-    if start >= len(buf):
-        return
-    end = min(end, len(buf))
-    buf[start:end] += sig[:end - start]
+rng = np.random.default_rng(11)
 
 def midi(n):
     return 440.0 * 2 ** ((n - 69) / 12.0)
 
 NOTE = {'C': 0, 'C#': 1, 'D': 2, 'D#': 3, 'E': 4, 'F': 5, 'F#': 6, 'G': 7, 'G#': 8, 'A': 9, 'A#': 10, 'B': 11}
 def nm(name):
-    p, o = name[:-1], int(name[-1])
-    return 12 * (o + 1) + NOTE[p]
+    return 12 * (int(name[-1]) + 1) + NOTE[name[:-1]]
 
-# Am - F - C - G  (4 bar dongu, 16 bar)
-prog = [
-    ('A', [nm('A2'), nm('C3'), nm('E3')]),
-    ('F', [nm('F2'), nm('A2'), nm('C3')]),
-    ('C', [nm('C3'), nm('E3'), nm('G3')]),
-    ('G', [nm('G2'), nm('B2'), nm('D3')]),
+# Am9 / Fmaj7 / Cmaj7 / G6
+CHORDS = [
+    [nm('A2'), nm('E3'), nm('C4'), nm('G4'), nm('B4')],
+    [nm('F2'), nm('C3'), nm('A3'), nm('E4'), nm('G4')],
+    [nm('C3'), nm('G3'), nm('E4'), nm('B4'), nm('D5')],
+    [nm('G2'), nm('D3'), nm('B3'), nm('E4'), nm('A4')],
 ]
 
-mix = np.zeros(N + SR)
+def env(n, a, d, s, r):
+    a_n, d_n, r_n = int(a * SR), int(d * SR), int(r * SR)
+    e = np.full(n, s, dtype=float)
+    a_n = min(a_n, n)
+    if a_n: e[:a_n] = np.linspace(0, 1, a_n, endpoint=False)
+    d_end = min(n, a_n + d_n)
+    if d_end > a_n: e[a_n:d_end] = np.linspace(1, s, d_end - a_n, endpoint=False)
+    r_n = min(r_n, n)
+    if r_n: e[-r_n:] *= np.linspace(1, 0, r_n)
+    return e
 
-lead_pat = [0, 2, 1, 2, 0, 2, 1, 2]
+def pad_tone(freq, n):
+    t = np.arange(n) / SR
+    vib = 1 + 0.0015 * np.sin(2 * np.pi * 0.23 * t)
+    ph = 2 * np.pi * np.cumsum(freq * vib) / SR
+    # yumusak sinüs + az harmonik
+    return (np.sin(ph) + 0.28 * np.sin(2 * ph) + 0.10 * np.sin(3 * ph)) * env(n, 0.9, 0.6, 0.85, 1.1)
+
+def bass_tone(freq, n):
+    t = np.arange(n) / SR
+    ph = 2 * np.pi * freq * t
+    return (np.sin(ph) + 0.18 * np.sin(2 * ph) + 0.06 * np.sin(3 * ph)) * env(n, 0.02, 0.15, 0.6, 0.35)
+
+def pluck_tone(freq, n):
+    t = np.arange(n) / SR
+    ph = 2 * np.pi * freq * t
+    return (np.sin(ph) + 0.22 * np.sin(2.01 * ph) + 0.07 * np.sin(4.02 * ph)) * np.exp(-t * 2.6)
+
+def noise(n):
+    return rng.standard_normal(n)
+
+def kick(n):
+    t = np.arange(n) / SR
+    f = 52 + 70 * np.exp(-t * 28)
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 11)
+
+def brush(n):
+    x = noise(n)
+    # yumusak lowpass
+    lp = np.zeros(n); acc = 0.0
+    for i in range(n):
+        acc += 0.22 * (x[i] - acc); lp[i] = acc
+    return lp * np.exp(-np.arange(n) / (SR * 0.07))
+
+left = np.zeros(N + 2 * SR)
+right = np.zeros(N + 2 * SR)
+
+def add(buf, sig, start, gain=1.0):
+    end = min(start + len(sig), len(buf))
+    if start < len(buf):
+        buf[start:end] += gain * sig[:end - start]
+
 for bar in range(BARS):
-    chord = prog[bar % 4][1]
-    bar_start = int(bar * BAR * SR)
+    chord = CHORDS[bar % 4]
+    t0 = int(bar * BAR * SR)
 
-    # --- bass: sekizlik square
-    root = chord[0] - 12
-    for eighth in range(8):
-        st = bar_start + int(eighth * BEAT / 2 * SR)
-        ln = int(BEAT / 2 * SR * 0.92)
-        add(mix, 0.30 * square(midi(root + (12 if eighth % 4 == 3 else 0)), ln, duty=0.42, a=0.004, d=0.05, s=0.55, r=0.02), st)
+    # pad: akoru bar boyunca tut (yumusak atak)
+    pad_len = int(BAR * SR * 1.12)
+    for vi, tone in enumerate(chord[1:]):
+        sig = pad_tone(midi(tone + 12), pad_len) * (0.055 + 0.012 * (1 - vi / 4))
+        add(left, sig, t0, 1.0)
+        add(right, sig, t0 + rng.integers(0, 260), 1.0)
 
-    # --- arpej: onaltilik pulse lead, 2 oktav yukari
-    for k in range(16):
-        st = bar_start + int(k * BEAT / 4 * SR)
-        ln = int(BEAT / 4 * SR * 0.85)
-        tone = chord[lead_pat[k % len(lead_pat)]] + 12
-        if bar % 4 == 3 and k >= 12:
-            tone += 12
-        add(mix, 0.20 * square(midi(tone), ln, duty=0.25, a=0.003, d=0.04, s=0.45, r=0.015), st)
+    # bas: ilk iki vurusta
+    for b in (0, 2):
+        st = t0 + int(b * BEAT * SR)
+        add(left, bass_tone(midi(chord[0]), int(BEAT * 1.7 * SR)), st, 0.36)
+        add(right, bass_tone(midi(chord[0]), int(BEAT * 1.7 * SR)), st, 0.36)
 
-    # --- pad: triangle akor
-    for tone in chord:
-        ln = int(BAR * SR * 0.98)
-        add(mix, 0.075 * triangle(midi(tone + 12), ln, a=0.12, d=0.2, s=0.75, r=0.25), bar_start)
+    # pluck arpej: 3. vurusta seyrek
+    for k, tone in enumerate(chord[2:4]):
+        st = t0 + int((2 + k * 0.5) * BEAT * SR)
+        p = pluck_tone(midi(tone + 12), int(BEAT * 1.2 * SR))
+        add(left, p, st, 0.10)
+        add(right, p, st + 180, 0.09)
 
-    # --- davul
-    for beat in range(4):
-        st = bar_start + int(beat * BEAT * SR)
-        # kick
-        ln = int(0.20 * SR)
-        tt = t_axis(ln)
-        kick = np.sin(2 * np.pi * np.cumsum(120 * np.exp(-tt * 22) + 45) / SR) * np.exp(-tt * 16)
-        add(mix, 0.55 * kick, st)
-        # snare (2 ve 4)
-        if beat in (1, 3):
-            add(mix, 0.20 * noise_hit(int(0.16 * SR), decay=0.045, cutoff=0.35), st)
-        # hihat sekizlik
-        for h in range(2):
-            hst = st + int(h * BEAT / 2 * SR)
-            add(mix, 0.075 * noise_hit(int(0.05 * SR), decay=0.012, cutoff=0.9), hst)
+    # davul: lo-fi, geri vurusta
+    for b in range(4):
+        st = t0 + int(b * BEAT * SR)
+        if b in (0, 2) or (bar % 2 == 1 and b == 3):
+            k = kick(int(0.42 * SR))
+            add(left, k, st, 0.42); add(right, k, st, 0.42)
+        if b in (1, 3):
+            br = brush(int(0.18 * SR))
+            add(left, br, st, 0.12); add(right, br, st + 90, 0.10)
+        # shaker
+        sh = noise(int(0.045 * SR)) * np.exp(-np.arange(int(0.045 * SR)) / (SR * 0.012))
+        add(left, sh, st + int(BEAT * 0.5 * SR), 0.016)
+        add(right, sh, st + int(BEAT * 0.5 * SR), 0.014)
 
-# son 4 barda lead'i bir oktav yuksek katmanla guclendir (final enerjisi)
-final_start = int(12 * BAR * SR)
-rng = np.random.default_rng(3)
-mix = mix[:N]
+# vinil / tape hissi
+crackle = np.zeros(N)
+for _ in range(900):
+    i = rng.integers(0, N)
+    crackle[i] = rng.normal(0, 0.05)
+# hafif yumusatma
+kernel = np.ones(3) / 3
+crackle = np.convolve(crackle, kernel, mode='same')
+hiss = rng.standard_normal(N) * 0.0035
 
-# hafif stereo genisletme + limiter
-delay = int(0.012 * SR)
-left = mix.copy()
-right = np.concatenate([np.zeros(delay), mix[:-delay]])
-stereo = np.stack([left * 0.96 + right * 0.16, right * 0.96 + left * 0.16], axis=1)
-stereo = np.tanh(stereo * 1.25)
+# hafif stereo genisletme + yumusak limiter
+delay = int(0.014 * SR)
+l = left[:N]
+r = np.concatenate([np.zeros(delay), right[:N - delay]])
+mix_l = l + crackle * 0.35 + hiss
+mix_r = r + np.concatenate([np.zeros(7), crackle[:N - 7]]) * 0.32 + np.roll(hiss, 311)
+
+stereo = np.stack([mix_l, mix_r], axis=1)
+# yumusak doyum
+stereo = np.tanh(stereo * 1.1)
+# loop kenarlarinda tik olmasin: 30 ms fade
+fade = int(0.03 * SR)
+stereo[:fade] *= np.linspace(0, 1, fade)[:, None]
+stereo[-fade:] *= np.linspace(1, 0, fade)[:, None]
 stereo /= np.max(np.abs(stereo)) + 1e-9
-stereo *= 0.92
+stereo *= 0.82
 
 os.makedirs('assets/audio', exist_ok=True)
 pcm = (stereo * 32767).astype('<i2')
 enc = lameenc.Encoder()
-enc.set_bit_rate(128)
+enc.set_bit_rate(112)
 enc.set_in_sample_rate(SR)
 enc.set_channels(2)
-enc.set_quality(2)
+enc.set_quality(3)
 mp3 = enc.encode(pcm.tobytes()) + enc.flush()
-open('assets/audio/coder-theme.mp3', 'wb').write(mp3)
-print('sure: %.1f sn, boyut: %.1f KB' % (DUR, len(mp3) / 1024))
+out = 'assets/audio/night-build.mp3'
+open(out, 'wb').write(mp3)
+print('sure: %.1f sn | boyut: %.1f KB' % (DUR, len(mp3) / 1024))

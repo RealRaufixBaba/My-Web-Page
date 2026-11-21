@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-"""Hacker temali dekoratif GIF'ler: kucuk terminal ve radar paneli.
-Cikti: assets/img/terminal.gif, assets/img/radar.gif
-"""
 import math, os
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
@@ -18,7 +14,6 @@ AMBER = (226, 178, 108)
 
 os.makedirs('assets/img', exist_ok=True)
 
-# ============================================================ terminal
 W, H = 460, 258
 FPS = 10
 FRAMES = 88
@@ -34,8 +29,6 @@ LINES = [
     ("build  ->  ship  ->  repeat", AMBER),
 ]
 
-# karakter zaman cizelgesi
-schedule = []   # (frame, line_index, char_index)
 CPS = 34.0
 cursor_frame = 0
 for li, (text, _) in enumerate(LINES):
@@ -49,7 +42,6 @@ TOTAL = cursor_frame + 24
 def make_terminal(fi):
     img = Image.new('RGB', (W, H), BG)
     d = ImageDraw.Draw(img)
-    # pencere
     d.rectangle([8, 8, W - 9, H - 9], fill=PANEL, outline=LINE)
     d.rectangle([8, 8, W - 9, 30], fill=(18, 21, 25))
     d.line([(8, 30), (W - 9, 30)], fill=LINE)
@@ -57,7 +49,6 @@ def make_terminal(fi):
         d.ellipse([18 + i * 14, 16, 24 + i * 14, 22], fill=col)
     d.text((70, 14), "raufix@baba — zsh — 80×24", font=MONO_S, fill=DIM)
 
-    # gorunen satirlar
     visible = {}
     for f, li, ci in schedule:
         if f <= fi:
@@ -79,7 +70,6 @@ def make_terminal(fi):
         last_li = li
         y += 22
 
-    # imlec
     if last_li >= 0:
         text, color = LINES[last_li]
         shown = text[:visible.get(last_li, 0)]
@@ -88,7 +78,6 @@ def make_terminal(fi):
         if fi % 10 < 6:
             d.rectangle([cx, cy - 1, cx + 6, cy + 12], fill=AMBER)
 
-    # tarama cizgileri
     for sy in range(0, H, 3):
         d.line([(0, sy), (W, sy)], fill=(0, 0, 0), width=1)
     overlay = Image.new('RGBA', (W, H), (0, 0, 0, 0))
@@ -102,7 +91,6 @@ frames = [make_terminal(fi) for fi in range(TOTAL)]
 frames[0].save('assets/img/terminal.gif', save_all=True, append_images=frames[1:],
                duration=100, loop=0, optimize=True, disposal=1)
 
-# ============================================================ radar
 S = 300
 R = 128
 CX, CY = S // 2, S // 2 + 4
@@ -120,7 +108,6 @@ def make_radar(fi):
     d.line([(CX - R, CY), (CX + R, CY)], fill=(38, 44, 50))
     d.line([(CX, CY - R), (CX, CY + R)], fill=(38, 44, 50))
 
-    # tarama izi (gradyan yelpaze)
     angle = (fi / RFRAMES) * 2 * math.pi - math.pi / 2
     sweep = Image.new('RGBA', (S, S), (0, 0, 0, 0))
     sd = ImageDraw.Draw(sweep)
@@ -139,7 +126,6 @@ def make_radar(fi):
     img = Image.alpha_composite(img.convert('RGBA'), sweep).convert('RGB')
     d = ImageDraw.Draw(img)
 
-    # hedefler
     targets = [(0.62, 0.22), (-0.35, 0.55), (0.15, -0.68)]
     for ti, (fx, fy) in enumerate(targets):
         tx = CX + R * fx

@@ -1,14 +1,4 @@
 <?php
-/**
- * RaufixBaba — iletişim formu işleyicisi
- * ---------------------------------------------------------------
- * Çalışması için PHP 7.4+ destekli bir sunucuda barındırılmalıdır.
- * GitHub Pages STATİK olduğu için bu dosya orada çalışmaz; site bu
- * durumda formu otomatik olarak GitHub issue akışına çevirir.
- *
- * Kurulum: php/config.php içindeki $MAIL_TO değerini değiştir.
- */
-
 declare(strict_types=1);
 session_start();
 
@@ -28,13 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     respond(false, 'Sadece POST istekleri kabul edilir.', 405);
 }
 
-// --- basit flood koruması: aynı oturumdan 30 saniyede 1 mesaj
 $now = time();
 if (isset($_SESSION['last_mail']) && ($now - (int) $_SESSION['last_mail']) < 30) {
     respond(false, 'Çok hızlısın :d 30 saniye sonra tekrar dene.', 429);
 }
 
-// --- bal küpü (bot tuzağı)
 if (!empty($_POST['website'])) {
     respond(true, 'Teşekkürler.');
 }
@@ -58,16 +46,15 @@ if ($errors) {
     respond(false, $errors[0], 422);
 }
 
-// başlık enjeksiyonunu engelle
 $clean = static function (string $value): string {
     return str_replace(["\r", "\n", "%0a", "%0d"], ' ', $value);
 };
 
-$subject = '=?UTF-8?B?' . base64_encode('Bio sitesi mesajı — ' . $clean($name)) . '?=';
+$subject = '=?UTF-8?B?' . base64_encode('Site mesajı: ' . $clean($name)) . '?=';
 $body = "Yeni mesaj var:\n\n"
       . "Ad     : {$name}\n"
       . "E-posta: {$email}\n"
-      . "Tarih  : " . date('d.m.Y H:i') . " (sunucu saati)\n"
+      . "Tarih  : " . date('d.m.Y H:i') . "\n"
       . "IP     : " . ($_SERVER['REMOTE_ADDR'] ?? 'bilinmiyor') . "\n"
       . str_repeat('-', 42) . "\n\n"
       . $message . "\n";
@@ -75,15 +62,15 @@ $body = "Yeni mesaj var:\n\n"
 $headers = [
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
-    'From: Bio Site <' . $MAIL_FROM . '>',
+    'From: Site <' . $MAIL_FROM . '>',
     'Reply-To: ' . $clean($email),
-    'X-Mailer: RaufixBaba-Bio'
+    'X-Mailer: PHP'
 ];
 
 $sent = @mail($MAIL_TO, $subject, $body, implode("\r\n", $headers));
 
 if (!$sent) {
-    respond(false, 'Sunucu maili gönderemedi. GitHub üzerinden yazabilirsin.', 500);
+    respond(false, 'Sunucu maili gönderemedi. GitHub profilinden yazabilirsin.', 500);
 }
 
 $_SESSION['last_mail'] = $now;

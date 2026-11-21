@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-"""Olgun/modern dark tema icin animasyonlu kod yagmuru arka plani.
-Soguk, dusuk doygunluklu sage tonlari; neon yok.
-Kullanim: python3 scripts/make_bg_gif.py -> assets/img/bg-code-rain.gif
-"""
 import math, os, random
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -18,7 +13,6 @@ WORDS = ["async", "await", "fun", "val", "class", "let", "kt", "php", "js", "css
          "build()", "0x1F", "APK", "root@", "sudo", "func", "for(;;)", "return", "null", "void",
          "intent", "gradle", "asm", "mod", "yarn", "commit", "push", "endif", "sudo -i"]
 
-# ---------- arka plan: koyu, soguk, hafif sicak vurgu ----------
 y = np.linspace(0, 1, H)[:, None]
 top = np.array([8, 9, 10], dtype=float)
 mid = np.array([11, 13, 14], dtype=float)
@@ -40,11 +34,9 @@ vig = np.clip(1.15 - (((xx - W / 2) / (W * 0.78)) ** 2 + ((yy - H / 2) / (H * 0.
 base_arr = np.clip(grad * (0.55 + 0.55 * vig)[:, :, None], 0, 255).astype(np.uint8)
 BASE = Image.fromarray(base_arr, 'RGB')
 
-# ---------- kod yagmuru ----------
 CELL_W, CELL_H = 18, 18
 COLS = W // CELL_W + 1
 ROWS = H // CELL_H + 3
-# dusuk doygunluk: sage, kutup grisi, hafif amber
 COLORS = [(126, 158, 138), (144, 156, 164), (156, 140, 108), (110, 138, 128), (172, 176, 168)]
 
 class Column:
@@ -85,7 +77,6 @@ def build_frame(fi):
                 fill = col.color + (a,)
             d.text((x, yy), txt, font=FONT, fill=fill)
 
-    # ince yatay tarama cizgileri
     scan = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     sd = ImageDraw.Draw(scan)
     for sy in range(0, H, 3):

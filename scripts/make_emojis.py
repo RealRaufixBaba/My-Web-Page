@@ -1,11 +1,6 @@
-#!/usr/bin/env python3
-"""Programci temali minik animasyonlu piksel emoji GIF'leri (48x48 chip'ler).
-Cikti: assets/img/emoji/*.gif
-"""
 import os
 from PIL import Image, ImageDraw
 
-SCALE = 3          # 16px sanat -> 48px
 PAD = 4
 SIZE = 16 * SCALE + PAD * 2
 BG = (18, 21, 26)
@@ -37,32 +32,26 @@ def save(name, frames, duration=220):
     frames[0].save(f'assets/img/emoji/{name}.gif', save_all=True, append_images=frames[1:],
                    duration=duration, loop=0, optimize=True, disposal=1)
 
-# ---------------- cursor ----------------
 def cursor(open_):
     im, d = canvas()
     d.rectangle([1, 2, 14, 13], fill=PANEL, outline=STEEL)
     d.rectangle([1, 2, 14, 3], fill=STEEL)
-    # ">" prompt
     for i in range(3):
         d.point((4 + i, 6 + i), fill=SAGE)
         d.point((4 + i, 10 - i), fill=SAGE)
-    # yanip sonen imlec blogu
     if open_:
         d.rectangle([8, 8, 10, 10], fill=AMBER)
     return im
 save('cursor', [cursor(True), cursor(False), cursor(True), cursor(False)], 260)
 
-# ---------------- coffee ----------------
 def coffee(phase):
     im, d = canvas()
-    # fincan
     d.rectangle([4, 8, 10, 12], fill=CREAM)
     d.rectangle([5, 9, 9, 11], fill=BROWN)
     d.rectangle([4, 8, 10, 8], fill=(236, 230, 216))
     d.rectangle([11, 9, 12, 11], fill=None, outline=CREAM)
     d.point((11, 9), fill=CREAM); d.point((12, 10), fill=CREAM); d.point((11, 11), fill=CREAM)
     d.rectangle([2, 13, 12, 13], fill=STEEL)
-    # buhar
     steam = [(6, 6, 5), (8, 5, 4), (7, 4, 3)]
     for i, (x, y, h) in enumerate(steam):
         xx = x + ((phase + i) % 3) - 1
@@ -71,7 +60,6 @@ def coffee(phase):
     return im
 save('coffee', [coffee(p) for p in range(3)], 300)
 
-# ---------------- bolt ----------------
 def bolt(level):
     im, d = canvas()
     col = {0: (70, 76, 84), 1: AMBER, 2: (245, 214, 158)}[level]
@@ -83,7 +71,6 @@ def bolt(level):
     return im
 save('bolt', [bolt(2), bolt(1), bolt(2), bolt(0), bolt(1)], 130)
 
-# ---------------- keyboard ----------------
 def keyboard(active):
     im, d = canvas()
     d.rectangle([1, 7, 14, 12], fill=(35, 41, 48), outline=STEEL)
@@ -99,7 +86,6 @@ def keyboard(active):
     return im
 save('keyboard', [keyboard(i) for i in range(5)], 180)
 
-# ---------------- chip ----------------
 def chip_cpu(phase):
     im, d = canvas()
     d.rectangle([4, 4, 11, 11], fill=(45, 52, 60), outline=STEEL)
@@ -118,7 +104,6 @@ def chip_cpu(phase):
     return im
 save('chip', [chip_cpu(i) for i in range(6)], 160)
 
-# ---------------- bug ----------------
 def bug(phase):
     im, d = canvas()
     body = SAGE if phase % 2 == 0 else (126, 158, 138)
@@ -126,13 +111,11 @@ def bug(phase):
     d.rectangle([7, 6, 9, 6], fill=body)
     d.point((7, 8), fill=(24, 28, 33)); d.point((9, 8), fill=(24, 28, 33))
     d.point((7, 10), fill=(96, 124, 106)); d.point((9, 10), fill=(96, 124, 106))
-    # ince bacaklar, ust uste binmesin
     lift = 0 if phase % 2 == 0 else 1
     for i, yy in enumerate((7, 9, 11)):
         off = i % 2
         d.point((4, yy - lift + off), fill=(120, 150, 130)); d.point((5, yy - lift + off), fill=(120, 150, 130))
         d.point((11, yy + lift - off), fill=(120, 150, 130)); d.point((12, yy + lift - off), fill=(120, 150, 130))
-    # anten
     for dx, dy in ((-1, -1), (1, -1)):
         d.point((8 + dx + (lift if dx > 0 else -lift), 4 + dy), fill=(150, 180, 158))
         d.point((8 + dx, 5), fill=(150, 180, 158))

@@ -2,8 +2,9 @@
   "use strict";
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const mq = q => window.matchMedia ? window.matchMedia(q).matches : false;
+  const reduceMotion = mq("(prefers-reduced-motion: reduce)");
+  const finePointer = mq("(hover: hover) and (pointer: fine)");
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = (new Date).getFullYear();
   const clockEl = $("#clock");
@@ -19,7 +20,35 @@
   }
   tickClock();
   setInterval(tickClock, 1e3);
-  const nav = $("#nav");
+  const nav = $(".nav") || $("#nav");
+  const scrollBar = $("#scrollBar");
+  function updateBar() {
+    if (!scrollBar) return;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    scrollBar.style.width = (pct * 100).toFixed(2) + "%";
+  }
+  window.addEventListener("scroll", updateBar, {
+    passive: true
+  });
+  updateBar();
+  const liveLine = $("#liveLine");
+  const liveLines = [ "derleme alıyorum", "bir GIF daha ekledim", "Android build kovalıyorum", "mod config'iyle boğuşuyorum", "deploy bekliyorum", "yeni bir dil deniyorum" ];
+  if (liveLine && !reduceMotion) {
+    let li = 0;
+    const rotate = () => {
+      liveLine.classList.add("is-fade");
+      setTimeout(() => {
+        li = (li + 1) % liveLines.length;
+        liveLine.textContent = liveLines[li];
+        liveLine.classList.remove("is-fade");
+      }, 320);
+    };
+    setInterval(rotate, 5200);
+  } else if (liveLine) {
+    liveLine.textContent = liveLines[0];
+  }
   const navLinks = $$("[data-nav]");
   const sections = navLinks.map(a => ({
     link: a,
@@ -58,7 +87,7 @@
   window.addEventListener("keydown", e => {
     if (e.key === "Escape") setMenu(false);
   });
-  const revealTargets = [ ".sec-head", ".story__gif", ".story__status", ".quote", ".work__row", ".cap", ".panel", ".note", ".journey__item", ".contact__intro", ".form" ];
+  const revealTargets = [ ".sec-head", ".story__gif", ".story__status", ".quote", ".work__row", ".cap", ".panel", ".note", ".journey__item", ".contact__intro", ".form", ".project", ".projects__head" ];
   if ("IntersectionObserver" in window && !reduceMotion) {
     const obs = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -255,7 +284,18 @@
   }
   function playMusic() {
     if (!audio) return Promise.resolve(false);
-    return audio.play().then(() => {
+    let attempt = null;
+    try {
+      attempt = audio.play();
+    } catch (err) {
+      attempt = null;
+    }
+    if (!attempt || typeof attempt.then !== "function") {
+      musicStarted = true;
+      setPlayingUI(true);
+      return Promise.resolve(true);
+    }
+    return attempt.then(() => {
       musicStarted = true;
       setPlayingUI(true);
       return true;
@@ -391,11 +431,38 @@
   if (!reduceMotion) setTimeout(scheduleStrike, 3200);
   const boltBtn = $("#boltBtn");
   if (boltBtn) boltBtn.addEventListener("click", () => strike(true));
+  const keysPanel = $("#keysPanel");
+  const keysBtn = $("#keysBtn");
+  const keysClose = $("#keysClose");
+  function setKeys(open) {
+    if (!keysPanel) return;
+    keysPanel.classList.toggle("is-open", open);
+    keysPanel.setAttribute("aria-hidden", open ? "false" : "true");
+    document.body.classList.toggle("keys-open", open);
+    if (keysBtn) keysBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  if (keysBtn) keysBtn.addEventListener("click", () => setKeys(!keysPanel.classList.contains("is-open")));
+  if (keysClose) keysClose.addEventListener("click", () => setKeys(false));
+  if (keysPanel) keysPanel.addEventListener("click", e => {
+    if (e.target === keysPanel) setKeys(false);
+  });
   window.addEventListener("keydown", e => {
     const tag = (e.target && e.target.tagName || "").toLowerCase();
-    if (tag === "input" || tag === "textarea") return;
-    if (e.key === "l" || e.key === "L") strike(true);
-    if (e.key === "Escape") hideHint();
+    const typing = tag === "input" || tag === "textarea";
+    const key = (e.key || "").toLowerCase();
+    if (key === "escape") {
+      setKeys(false);
+      hideHint();
+      return;
+    }
+    if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (key === "l") strike(true);
+    if (key === "k") toggleMusic();
+    if (key === "t") window.scrollTo({
+      top: 0,
+      behavior: reduceMotion ? "auto" : "smooth"
+    });
+    if (key === "h" || key === "?") setKeys(true);
   });
   const form = $("#contactForm");
   const formStatus = $("#formStatus");
@@ -484,6 +551,6 @@
   try {
     console.log("%cRaufixBaba", "color:#d7a97b;font:600 15px/1.4 serif");
     console.log("%c4 yıl · android · web · minecraft modlama", "color:#9db8a8;font-family:monospace");
-    console.log("%cİpucu: 'L' tuşu şimşek çakar.", "color:#8a9199;font-family:monospace");
+    console.log("%cİpucu: L şimşek, K müzik, H kısayollar.", "color:#8a9199;font-family:monospace");
   } catch (err) {}
 })();

@@ -86,8 +86,8 @@
     <nav class="nav__links" aria-label="Bölümler">
       <a href="#hikaye" data-nav>Hikâye</a>
       <a href="#isler" data-nav>İşler</a>
-      <a href="#yetenekler" data-nav>Yetenekler</a>
-      <a href="#yolculuk" data-nav>Yolculuk</a>
+      <a href="#araclar" data-nav>Araçlar</a>
+      <a href="#sohbet" data-nav>Sohbet</a>
       <a href="#notlar" data-nav>Notlar</a>
       <a href="#iletisim" data-nav>İletişim</a>
     </nav>
@@ -115,8 +115,10 @@
     <a href="#isler"><span class="mono">02</span> İşler</a>
     <a href="#yetenekler"><span class="mono">03</span> Yetenekler</a>
     <a href="#yolculuk"><span class="mono">04</span> Yolculuk</a>
-    <a href="#notlar"><span class="mono">05</span> Notlar</a>
-    <a href="#iletisim"><span class="mono">06</span> İletişim</a>
+    <a href="#araclar"><span class="mono">05</span> Araçlar</a>
+    <a href="#notlar"><span class="mono">06</span> Notlar</a>
+    <a href="#sohbet"><span class="mono">07</span> Sohbet</a>
+    <a href="#iletisim"><span class="mono">08</span> İletişim</a>
   </nav>
   <div class="menu__foot mono">
     <a href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">github.com/RealRaufixBaba ↗</a>
@@ -493,10 +495,93 @@
   </section>
 
   
+  <section class="section" id="araclar">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-num mono">05 — araçlar</p>
+        <h2 class="sec-title">Buradan dene, hiçbir yere gitmiyor.</h2>
+        <p class="sec-sub">Şifreleme ve hash işleri tarayıcının kendi kripto motorunda dönüyor. Yazdığın metin sunucuya çıkmıyor, hiçbir yerde saklanmıyor.</p>
+      </header>
+
+      <div class="tools">
+        <div class="tools__tabs" role="tablist" aria-label="Araçlar">
+          <button class="tool-tab is-on" type="button" role="tab" aria-selected="true" data-tool="aes">AES-GCM</button>
+          <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="hash">Hash</button>
+          <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="b64">Base64</button>
+          <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="jwt">JWT</button>
+          <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="uuid">UUID</button>
+          <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="pw">Şifre üret</button>
+        </div>
+
+        <div class="tools__body">
+          <div class="tool-panel is-on" data-tool="aes">
+            <p class="tool-hint mono">AES-256-GCM · PBKDF2 (150.000 tur) · rastgele tuz ve IV</p>
+            <label class="field"><span class="mono">şifre</span><input id="aesPass" type="password" placeholder="en az 6 karakter" autocomplete="off" /></label>
+            <label class="field"><span class="mono">metin ya da şifreli veri</span><textarea id="aesText" rows="4" placeholder="şifrelenecek metni ya da v1.… çıktısını buraya yapıştır"></textarea></label>
+            <div class="tools__acts">
+              <button class="btn btn--solid" id="aesEnc" type="button">şifrele</button>
+              <button class="btn btn--line" id="aesDec" type="button">çöz</button>
+            </div>
+          </div>
+
+          <div class="tool-panel" data-tool="hash">
+            <p class="tool-hint mono">tek yönlü özet · aynı metin her zaman aynı sonucu verir</p>
+            <label class="field"><span class="mono">metin</span><textarea id="hashText" rows="3" placeholder="hash'lenecek metin"></textarea></label>
+            <div class="tools__acts"><button class="btn btn--solid" id="hashBtn" type="button">hash al</button></div>
+            <label class="field"><span class="mono">HMAC anahtarı</span><input id="hmacKey" type="text" placeholder="gizli anahtar" autocomplete="off" /></label>
+            <label class="field"><span class="mono">HMAC metni</span><input id="hmacText" type="text" placeholder="imzalanacak metin" autocomplete="off" /></label>
+            <div class="tools__acts"><button class="btn btn--line" id="hmacBtn" type="button">HMAC-SHA256</button></div>
+          </div>
+
+          <div class="tool-panel" data-tool="b64">
+            <p class="tool-hint mono">base64 · metni taşımak için, şifrelemek için değil</p>
+            <label class="field"><span class="mono">metin</span><textarea id="b64Text" rows="4" placeholder="metin ya da base64"></textarea></label>
+            <div class="tools__acts">
+              <button class="btn btn--solid" id="b64Enc" type="button">kodla</button>
+              <button class="btn btn--line" id="b64Dec" type="button">çöz</button>
+            </div>
+          </div>
+
+          <div class="tool-panel" data-tool="jwt">
+            <p class="tool-hint mono">JWT · imza doğrulanmaz, sadece içerik okunur</p>
+            <label class="field"><span class="mono">token</span><textarea id="jwtText" rows="4" placeholder="eyJhbGciOi…"></textarea></label>
+            <div class="tools__acts"><button class="btn btn--solid" id="jwtBtn" type="button">çöz</button></div>
+          </div>
+
+          <div class="tool-panel" data-tool="uuid">
+            <p class="tool-hint mono">UUID v4 · rastgele, çakışma ihtimali yok sayılır</p>
+            <label class="field"><span class="mono">adet</span><input id="uuidCount" type="number" min="1" max="20" value="3" /></label>
+            <div class="tools__acts"><button class="btn btn--solid" id="uuidBtn" type="button">üret</button></div>
+          </div>
+
+          <div class="tool-panel" data-tool="pw">
+            <p class="tool-hint mono">şifre üretici · karakterler tarayıcıda rastgele seçilir</p>
+            <label class="field"><span class="mono">uzunluk: <b id="pwLenOut">20</b></span><input id="pwLen" type="range" min="8" max="64" value="20" /></label>
+            <div class="tools__checks">
+              <label class="check"><input id="pwLower" type="checkbox" checked /><span class="mono">a-z</span></label>
+              <label class="check"><input id="pwUpper" type="checkbox" checked /><span class="mono">A-Z</span></label>
+              <label class="check"><input id="pwDigit" type="checkbox" checked /><span class="mono">0-9</span></label>
+              <label class="check"><input id="pwSym" type="checkbox" checked /><span class="mono">sembol</span></label>
+            </div>
+            <div class="tools__acts"><button class="btn btn--solid" id="pwBtn" type="button">üret</button></div>
+          </div>
+
+          <div class="tools__result">
+            <div class="tools__result-head">
+              <span class="mono">çıktı</span>
+              <button class="tools__copy mono" id="toolCopy" type="button">kopyala</button>
+            </div>
+            <pre class="tools__out" id="toolOut" aria-live="polite"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="notlar">
     <div class="wrap">
       <header class="sec-head">
-        <p class="sec-num mono">05 — notlar</p>
+        <p class="sec-num mono">06 — notlar</p>
         <h2 class="sec-title">Kenara yazdıklarım.</h2>
         <p class="sec-sub">Bunlar blog yazısı değil; iş sırasında not aldığım şeyler.</p>
       </header>
@@ -541,11 +626,51 @@
     </div>
   </section>
 
+  <section class="section" id="sohbet">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-num mono">07 — sohbet</p>
+        <h2 class="sec-title">Tek oda, herkes burada.</h2>
+        <p class="sec-sub">Üyelik yok, isim yeter. Flood, tekrar mesaj ve link spam'i tarayıcıda ve sunucuda ayrı ayrı engelleniyor; mesajlar sadece metin olarak basılır.</p>
+      </header>
+
+      <div class="chat">
+        <div class="chat__top">
+          <span class="chat__state mono" id="chatStatus">bağlanıyor</span>
+          <span class="mono chat__meta">son 80 mesaj · 5 saniyede bir yenilenir</span>
+        </div>
+
+        <ul class="chat__list" id="chatList" aria-live="polite"></ul>
+
+        <div class="chat__composer">
+          <input class="chat__trap" id="chatTrap" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <label class="field">
+            <span class="mono">adın</span>
+            <input id="chatName" type="text" maxlength="24" placeholder="2-24 karakter, link yok" autocomplete="nickname" />
+          </label>
+          <label class="field">
+            <span class="mono">mesaj</span>
+            <textarea id="chatBody" rows="3" maxlength="240" placeholder="tek satır da olur, paragraf da"></textarea>
+          </label>
+          <div class="chat__foot">
+            <span class="mono chat__count" id="chatCount">0/220</span>
+            <span class="chat__captcha mono" id="chatCaptcha" hidden>
+              <span id="chatCaptchaQ"></span>
+              <input id="chatCaptchaA" type="text" inputmode="numeric" placeholder="?" aria-label="Kontrol sorusu" />
+            </span>
+            <button class="btn btn--solid" id="chatSend" type="button">gönder</button>
+          </div>
+          <p class="chat__note mono" id="chatNote" role="status"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section section--contact" id="iletisim">
     <div class="wrap">
       <div class="contact">
         <div class="contact__intro">
-          <p class="sec-num mono">06 — iletişim</p>
+          <p class="sec-num mono">08 — iletişim</p>
           <h2 class="sec-title contact__title">Bir iş, bir fikir ya da<br />sadece bir merhaba. <span class="ital">Yaz.</span></h2>
           <p class="sec-sub">Soru, iş birliği, “bu nasıl yapıldı”... hepsine açığım. Genelde aynı gün dönüyorum.</p>
 
@@ -640,6 +765,9 @@
   </div>
 </div>
 
+<script src="assets/js/config.js"></script>
+<script src="assets/js/tools.js"></script>
+<script src="assets/js/chat.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

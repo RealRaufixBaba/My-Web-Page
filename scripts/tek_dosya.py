@@ -30,12 +30,13 @@ html = re.sub(
     html,
 )
 
-js = (docs / "assets/js/main.js").read_text(encoding="utf-8")
-html = re.sub(
-    r'<script[^>]+src="assets/js/main\.js"[^>]*></script>',
-    lambda m: "<script>" + js + "</script>",
-    html,
-)
+for script in ("config.js", "tools.js", "chat.js", "main.js"):
+    src = (docs / "assets/js" / script).read_text(encoding="utf-8")
+    html = re.sub(
+        r'<script[^>]+src="assets/js/' + re.escape(script) + r'"[^>]*></script>',
+        lambda m, code=src: "<script>" + code + "</script>",
+        html,
+    )
 
 for folder in ("img", "img/emoji", "audio"):
     directory = docs / "assets" / folder

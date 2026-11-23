@@ -21,38 +21,47 @@ const cssOut = new CleanCSS({ level: 2, rebase: false }).minify(css);
 if (cssOut.errors.length) throw new Error(cssOut.errors.join("\n"));
 await fs.writeFile(path.join(DIST, "assets/css/style.css"), cssOut.styles);
 
-const js = await fs.readFile("assets/js/main.js", "utf8");
-const jsMin = await minifyJs(js, {
-  compress: { passes: 2, drop_console: false },
-  mangle: true,
-  format: { comments: false }
-});
-if (!jsMin.code) throw new Error("Terser JS üretemedi");
-const obfuscated = JavaScriptObfuscator.obfuscate(jsMin.code, {
-  compact: true,
-  target: "browser",
-  identifierNamesGenerator: "hexadecimal",
-  renameGlobals: false,
-  controlFlowFlattening: false,
-  deadCodeInjection: false,
-  debugProtection: false,
-  selfDefending: false,
-  disableConsoleOutput: false,
-  simplify: true,
-  numbersToExpressions: true,
-  splitStrings: true,
-  splitStringsChunkLength: 7,
-  stringArray: true,
-  stringArrayThreshold: 0.8,
-  stringArrayRotate: true,
-  stringArrayShuffle: true,
-  stringArrayEncoding: ["base64"],
-  stringArrayCallsTransform: false,
-  transformObjectKeys: false,
-  unicodeEscapeSequence: false,
-  log: false
-}).getObfuscatedCode();
-await fs.writeFile(path.join(DIST, "assets/js/main.js"), obfuscated);
+const lock = process.env.NOLOCK === "1" ? undefined : [ "realraufixbaba.github.io" ];
+const jsFiles = [ "main.js", "tools.js", "chat.js", "config.js" ];
+for (const file of jsFiles) {
+  const source = await fs.readFile(path.join("assets/js", file), "utf8");
+  const min = await minifyJs(source, {
+    compress: { passes: 2, drop_console: false },
+    mangle: true,
+    format: { comments: false }
+  });
+  if (!min.code) throw new Error("Terser JS uretemedi: " + file);
+  const options = {
+    compact: true,
+    target: "browser",
+    identifierNamesGenerator: "hexadecimal",
+    renameGlobals: false,
+    controlFlowFlattening: true,
+    controlFlowFlatteningThreshold: 0.35,
+    deadCodeInjection: false,
+    debugProtection: true,
+    debugProtectionInterval: 2000,
+    selfDefending: false,
+    disableConsoleOutput: false,
+    simplify: true,
+    numbersToExpressions: true,
+    splitStrings: true,
+    splitStringsChunkLength: 7,
+    stringArray: true,
+    stringArrayThreshold: 0.85,
+    stringArrayRotate: true,
+    stringArrayShuffle: true,
+    stringArrayEncoding: [ "base64" ],
+    stringArrayCallsTransform: true,
+    stringArrayCallsTransformThreshold: 0.5,
+    transformObjectKeys: false,
+    unicodeEscapeSequence: false,
+    log: false
+  };
+  if (lock) options.domainLock = lock;
+  const code = JavaScriptObfuscator.obfuscate(min.code, options).getObfuscatedCode();
+  await fs.writeFile(path.join(DIST, "assets/js", file), code);
+}
 
 const htmlOptions = {
   collapseWhitespace: true,

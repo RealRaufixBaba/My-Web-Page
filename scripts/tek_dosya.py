@@ -9,7 +9,7 @@ html = (docs / "index.html").read_text(encoding="utf-8")
 
 mimetypes.add_type("image/svg+xml", ".svg")
 
-html = re.sub(r'<meta property="og:image"[^>]*>', "", html)
+html = html.replace("https://realraufixbaba.github.io/My-Web-Page/assets/img/og-cover.jpg", "__OG__")
 
 
 def data_uri(path: Path) -> str:
@@ -46,6 +46,8 @@ for folder in ("img", "img/emoji", "audio"):
             continue
         rel = "assets/" + folder + "/" + asset.name
         html = html.replace(rel, data_uri(asset))
+
+html = html.replace("__OG__", "https://realraufixbaba.github.io/og-cover.jpg")
 
 out = root / "koksayfa" / "index.html"
 out.parent.mkdir(exist_ok=True)

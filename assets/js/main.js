@@ -87,7 +87,7 @@
   window.addEventListener("keydown", e => {
     if (e.key === "Escape") setMenu(false);
   });
-  const revealTargets = [ ".sec-head", ".story__gif", ".story__status", ".quote", ".work__row", ".cap", ".panel", ".note", ".journey__item", ".contact__intro", ".form", ".project", ".projects__head" ];
+  const revealTargets = [ ".sec-head", ".story__gif", ".story__status", ".quote", ".work__row", ".cap", ".panel", ".note", ".journey__item", ".contact__intro", ".form", ".project", ".projects__head", ".note-row" ];
   if ("IntersectionObserver" in window && !reduceMotion) {
     const obs = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -266,10 +266,20 @@
   const hintClose = $("#hintClose");
   let musicStarted = false;
   let hintDismissed = false;
+  let savedVol = .42;
+  try {
+    const raw = window.localStorage.getItem("rb-vol");
+    if (raw !== null) {
+      const n = Number(raw);
+      if (Number.isFinite(n) && n >= 0 && n <= 100) savedVol = n / 100;
+    }
+  } catch (err) {}
+  const coarse = mq("(pointer: coarse)");
   if (audio) {
-    audio.volume = .42;
+    audio.volume = savedVol;
     audio.loop = true;
   }
+  if (volRange) volRange.value = String(Math.round(savedVol * 100));
   function setPlayingUI(playing) {
     if (player) player.classList.toggle("is-playing", playing);
     if (musicBtn) musicBtn.setAttribute("aria-pressed", playing ? "true" : "false");
@@ -318,6 +328,9 @@
       const v = Math.max(0, Math.min(100, Number(volRange.value)));
       audio.volume = v / 100;
       volRange.style.background = `linear-gradient(90deg, var(--sage) ${v}%, rgba(255,255,255,.14) ${v}%)`;
+      try {
+        window.localStorage.setItem("rb-vol", String(Math.round(v)));
+      } catch (err) {}
     };
     volRange.addEventListener("input", syncVol);
     syncVol();
@@ -330,7 +343,12 @@
     });
   }
   setTimeout(() => {
-    if (audio && audio.paused && !musicStarted) {
+    if (!audio || musicStarted) return;
+    if (coarse) {
+      showHint();
+      return;
+    }
+    if (audio.paused) {
       playMusic().then(ok => {
         if (!ok) showHint();
       });
@@ -431,6 +449,160 @@
   if (!reduceMotion) setTimeout(scheduleStrike, 3200);
   const boltBtn = $("#boltBtn");
   if (boltBtn) boltBtn.addEventListener("click", () => strike(true));
+  const liveRegion = $("#liveRegion");
+  function announce(msg) {
+    if (liveRegion) liveRegion.textContent = msg;
+  }
+  const filters = $$(".filter");
+  const projectCards = $$(".project");
+  filters.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const cat = btn.dataset.filter || "all";
+      filters.forEach(b => {
+        const on = b === btn;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      let shown = 0;
+      projectCards.forEach(card => {
+        const match = cat === "all" || card.dataset.cat === cat;
+        card.classList.toggle("is-hidden", !match);
+        if (match) shown++;
+      });
+      announce(cat === "all" ? "tüm projeler gösteriliyor" : cat + " projeleri gösteriliyor");
+      if (shown) {
+        const first = projectCards.find(c => !c.classList.contains("is-hidden"));
+        if (first) first.classList.add("is-in");
+      }
+    });
+  });
+  const palette = $("#palette");
+  const paletteInput = $("#paletteInput");
+  const paletteList = $("#paletteList");
+  const paletteBtn = $("#paletteBtn");
+  const goTo = target => {
+    setPalette(false);
+    const el = target.startsWith("#") ? $(target) : null;
+    if (el) {
+      el.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "start"
+      });
+      history.replaceState(null, "", target);
+    } else if (target.startsWith("http")) {
+      window.open(target, "_blank", "noopener");
+    }
+  };
+  const paletteItems = [
+    { k: "bölüm", t: "Hikâye", a: "#hikaye" },
+    { k: "bölüm", t: "İşler", a: "#isler" },
+    { k: "bölüm", t: "Yetenekler", a: "#yetenekler" },
+    { k: "bölüm", t: "Yolculuk", a: "#yolculuk" },
+    { k: "bölüm", t: "Notlar", a: "#notlar" },
+    { k: "bölüm", t: "İletişim", a: "#iletisim" },
+    { k: "proje", t: "RaufixTeam Launcher", a: "https://github.com/RealRaufixBaba/RaufixTeam-Launcher" },
+    { k: "proje", t: "CPVP Macros", a: "https://github.com/RealRaufixBaba/CPVP-MACROS-PRO" },
+    { k: "proje", t: "DepremAlarm", a: "https://github.com/RealRaufixBaba/DepremAlarm-" },
+    { k: "proje", t: "Bu sayfa", a: "#notlar" },
+    { k: "komut", t: "Müziği aç / kapat", a: "#music" },
+    { k: "komut", t: "Şimşek çak", a: "#bolt" },
+    { k: "komut", t: "Başa dön", a: "#top" },
+    { k: "komut", t: "Klavye kısayolları", a: "#keys" },
+    { k: "link", t: "GitHub profili", a: "https://github.com/RealRaufixBaba" }
+  ];
+  let paletteIndex = 0;
+  let paletteShown = paletteItems;
+  function runPalette(item) {
+    if (!item) return;
+    if (item.a === "#music") {
+      setPalette(false);
+      toggleMusic();
+      announce("müzik durumu değişti");
+      return;
+    }
+    if (item.a === "#bolt") {
+      setPalette(false);
+      strike(true);
+      announce("şimşek çaktı");
+      return;
+    }
+    if (item.a === "#keys") {
+      setPalette(false);
+      setKeys(true);
+      return;
+    }
+    goTo(item.a);
+  }
+  function renderPalette(query) {
+    if (!paletteList) return;
+    const q = (query || "").trim().toLowerCase();
+    paletteShown = paletteItems.filter(i => !q || i.t.toLowerCase().includes(q) || i.k.includes(q));
+    if (paletteIndex >= paletteShown.length) paletteIndex = 0;
+    if (!paletteShown.length) {
+      paletteList.innerHTML = '<li class="palette__empty">eşleşen bir şey yok</li>';
+      return;
+    }
+    paletteList.innerHTML = paletteShown.map((item, i) => (
+      `<li class="palette__item${i === paletteIndex ? " is-sel" : ""}" role="option" aria-selected="${i === paletteIndex}" data-i="${i}">` +
+      `<span class="palette__item-k">${item.k}</span>` +
+      `<span class="palette__item-t">${item.t}</span>` +
+      `<span class="palette__item-a">↵</span></li>`
+    )).join("");
+  }
+  function movePalette(dir) {
+    if (!paletteShown.length) return;
+    paletteIndex = (paletteIndex + dir + paletteShown.length) % paletteShown.length;
+    renderPalette(paletteInput ? paletteInput.value : "");
+    const sel = paletteList ? paletteList.querySelector(".is-sel") : null;
+    if (sel && sel.scrollIntoView) sel.scrollIntoView({
+      block: "nearest"
+    });
+  }
+  function setPalette(open) {
+    if (!palette) return;
+    palette.classList.toggle("is-open", open);
+    palette.setAttribute("aria-hidden", open ? "false" : "true");
+    document.body.classList.toggle("palette-open", open);
+    if (open) {
+      paletteIndex = 0;
+      if (paletteInput) {
+        paletteInput.value = "";
+        renderPalette("");
+        setTimeout(() => paletteInput.focus(), 40);
+      }
+      announce("arama açıldı");
+    }
+  }
+  if (paletteBtn) paletteBtn.addEventListener("click", () => setPalette(true));
+  if (paletteInput) {
+    paletteInput.addEventListener("input", () => {
+      paletteIndex = 0;
+      renderPalette(paletteInput.value);
+    });
+    paletteInput.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        movePalette(1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        movePalette(-1);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        runPalette(paletteShown[paletteIndex]);
+      }
+    });
+  }
+  if (paletteList) {
+    paletteList.addEventListener("click", e => {
+      const li = e.target.closest(".palette__item");
+      if (li) runPalette(paletteShown[Number(li.dataset.i)]);
+    });
+  }
+  if (palette) {
+    palette.addEventListener("click", e => {
+      if (e.target === palette) setPalette(false);
+    });
+  }
   const keysPanel = $("#keysPanel");
   const keysBtn = $("#keysBtn");
   const keysClose = $("#keysClose");
@@ -452,7 +624,18 @@
     const key = (e.key || "").toLowerCase();
     if (key === "escape") {
       setKeys(false);
+      setPalette(false);
       hideHint();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && key === "k") {
+      e.preventDefault();
+      setPalette(true);
+      return;
+    }
+    if (key === "/" && !typing) {
+      e.preventDefault();
+      setPalette(true);
       return;
     }
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -463,6 +646,10 @@
       behavior: reduceMotion ? "auto" : "smooth"
     });
     if (key === "h" || key === "?") setKeys(true);
+    if (key === "k" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      setPalette(true);
+    }
   });
   const form = $("#contactForm");
   const formStatus = $("#formStatus");
@@ -551,6 +738,6 @@
   try {
     console.log("%cRaufixBaba", "color:#d7a97b;font:600 15px/1.4 serif");
     console.log("%c4 yıl · android · web · minecraft modlama", "color:#9db8a8;font-family:monospace");
-    console.log("%cİpucu: L şimşek, K müzik, H kısayollar.", "color:#8a9199;font-family:monospace");
+    console.log("%cİpucu: Ctrl+K ara, L şimşek, K müzik, H kısayollar.", "color:#8a9199;font-family:monospace");
   } catch (err) {}
 })();

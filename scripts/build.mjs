@@ -71,6 +71,10 @@ for (const page of ["index.html", "404.html"]) {
   await fs.writeFile(path.join(DIST, page), await minifyHtml(html, htmlOptions));
 }
 
+for (const extra of ["robots.txt", "sitemap.xml"]) {
+  await fs.copyFile(extra, path.join(DIST, extra));
+}
+
 await fs.cp("assets/img", path.join(DIST, "assets/img"), { recursive: true });
 await fs.cp("assets/audio", path.join(DIST, "assets/audio"), { recursive: true });
 await fs.writeFile(path.join(DIST, ".nojekyll"), "");

@@ -12,7 +12,13 @@
 <meta property="og:type" content="website" />
 <meta property="og:title" content="RaufixBaba — Yazılım Geliştirici" />
 <meta property="og:description" content="4 yıl, birden fazla dil, Android + Web + Minecraft modlama. 7/24 kod modunda." />
-<meta property="og:image" content="https://realraufixbaba.github.io/My-Web-Page/assets/img/portrait.jpg" />
+<meta property="og:image" content="https://realraufixbaba.github.io/My-Web-Page/assets/img/og-cover.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="RaufixBaba — yazılım geliştirici" />
+<meta property="og:url" content="https://realraufixbaba.github.io/" />
+<meta property="og:locale" content="tr_TR" />
+<meta name="twitter:image" content="https://realraufixbaba.github.io/My-Web-Page/assets/img/og-cover.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
@@ -21,10 +27,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="preload" as="image" href="assets/img/bg-code-rain.gif" />
 <link rel="stylesheet" href="assets/css/style.css" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"RaufixBaba","url":"https://realraufixbaba.github.io/","jobTitle":"Yazılım Geliştirici","description":"Android, web ve Minecraft modlama üzerine dört yıllık geliştirici.","address":{"@type":"PostalAddress","addressLocality":"İstanbul","addressCountry":"TR"},"knowsAbout":["Android","Kotlin","Java","JavaScript","PHP","Minecraft","Forge","Fabric"],"sameAs":["https://github.com/RealRaufixBaba"]}</script>
 </head>
 <body>
 
+<a class="skip" href="#hikaye">İçeriğe atla</a>
+
 <div class="sbar" id="scrollBar" aria-hidden="true"></div>
+
+<p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
 
 <div class="bg" aria-hidden="true">
@@ -41,7 +52,7 @@
 
 <div class="cursor-light" id="cursorLight" aria-hidden="true"></div>
 
-<audio id="themeAudio" src="assets/audio/night-build.mp3" loop preload="auto"></audio>
+<audio id="themeAudio" src="assets/audio/night-build.mp3" loop preload="metadata"></audio>
 
 <div class="player" id="player">
   <button class="player__btn" id="musicBtn" type="button" aria-label="Müziği aç / kapat" aria-pressed="false">
@@ -77,6 +88,7 @@
       <a href="#isler" data-nav>İşler</a>
       <a href="#yetenekler" data-nav>Yetenekler</a>
       <a href="#yolculuk" data-nav>Yolculuk</a>
+      <a href="#notlar" data-nav>Notlar</a>
       <a href="#iletisim" data-nav>İletişim</a>
     </nav>
 
@@ -85,6 +97,11 @@
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
         <span class="mono">GitHub</span>
       </a>
+      <button class="nav__search" id="paletteBtn" type="button" aria-label="Site içinde ara">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16m6-2 4 4"/></svg>
+        <span class="mono">ara</span>
+        <kbd class="nav__kbd mono">⌘K</kbd>
+      </button>
       <button class="nav__toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Menüyü aç">
         <span></span><span></span>
       </button>
@@ -98,7 +115,8 @@
     <a href="#isler"><span class="mono">02</span> İşler</a>
     <a href="#yetenekler"><span class="mono">03</span> Yetenekler</a>
     <a href="#yolculuk"><span class="mono">04</span> Yolculuk</a>
-    <a href="#iletisim"><span class="mono">05</span> İletişim</a>
+    <a href="#notlar"><span class="mono">05</span> Notlar</a>
+    <a href="#iletisim"><span class="mono">06</span> İletişim</a>
   </nav>
   <div class="menu__foot mono">
     <a href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">github.com/RealRaufixBaba ↗</a>
@@ -295,8 +313,15 @@
           <p class="projects__note mono">hepsi aynı elden, farklı gecelerde</p>
         </div>
 
+        <div class="filters" role="tablist" aria-label="Proje filtreleri">
+          <button class="filter is-on" type="button" role="tab" aria-selected="true" data-filter="all">hepsi <b class="mono">4</b></button>
+          <button class="filter" type="button" role="tab" aria-selected="false" data-filter="android">android <b class="mono">1</b></button>
+          <button class="filter" type="button" role="tab" aria-selected="false" data-filter="web">web <b class="mono">1</b></button>
+          <button class="filter" type="button" role="tab" aria-selected="false" data-filter="oyun">oyun <b class="mono">2</b></button>
+        </div>
+
         <ul class="projects__grid">
-          <li class="project" data-reveal>
+          <li class="project" data-reveal data-cat="oyun">
             <div class="project__top">
               <span class="project__tag mono">java</span>
               <span class="project__state mono">devam</span>
@@ -307,7 +332,7 @@
             <a class="project__link mono" href="https://github.com/RealRaufixBaba/RaufixTeam-Launcher" target="_blank" rel="noopener">repoya bak <span aria-hidden="true">↗</span></a>
           </li>
 
-          <li class="project" data-reveal>
+          <li class="project" data-reveal data-cat="oyun">
             <div class="project__top">
               <span class="project__tag mono">pvp</span>
               <span class="project__state mono">yayında</span>
@@ -318,7 +343,7 @@
             <a class="project__link mono" href="https://github.com/RealRaufixBaba/CPVP-MACROS-PRO" target="_blank" rel="noopener">repoya bak <span aria-hidden="true">↗</span></a>
           </li>
 
-          <li class="project" data-reveal>
+          <li class="project" data-reveal data-cat="android">
             <div class="project__top">
               <span class="project__tag mono">android</span>
               <span class="project__state mono">yayında</span>
@@ -327,6 +352,17 @@
             <p class="project__desc">Deprem uyarı uygulaması. Arka planda çalışan servis, bildirim ve konum kontrolü. Telefon cebimdeyken de haber versin diye yazdım.</p>
             <ul class="tags mono"><li>Kotlin</li><li>Servis</li><li>Bildirim</li></ul>
             <a class="project__link mono" href="https://github.com/RealRaufixBaba/DepremAlarm-" target="_blank" rel="noopener">repoya bak <span aria-hidden="true">↗</span></a>
+          </li>
+
+          <li class="project" data-reveal data-cat="web">
+            <div class="project__top">
+              <span class="project__tag mono">web</span>
+              <span class="project__state mono">canlıda</span>
+            </div>
+            <h3 class="project__name">Bu sayfa</h3>
+            <p class="project__desc">Tek dosya, dış asset yok: müzik, GIF'ler ve yazı tipleri dışında hiçbir şeye bağlı değil. Kaynağı küçültülüp okunmaz hale getirilmiş halde yayında.</p>
+            <ul class="tags mono"><li>HTML</li><li>CSS</li><li>JS</li></ul>
+            <a class="project__link mono" href="#hikaye">hikâyeye geç <span aria-hidden="true">↓</span></a>
           </li>
         </ul>
       </div>
@@ -457,11 +493,59 @@
   </section>
 
   
+  <section class="section" id="notlar">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-num mono">05 — notlar</p>
+        <h2 class="sec-title">Kenara yazdıklarım.</h2>
+        <p class="sec-sub">Bunlar blog yazısı değil; iş sırasında not aldığım şeyler.</p>
+      </header>
+
+      <ol class="notes-list">
+        <li class="note-row" data-reveal>
+          <span class="note-row__k mono">tek dosya</span>
+          <div class="note-row__body">
+            <h3>Bu sayfa neden tek dosya?</h3>
+            <p>Sunucu, veritabanı, build hattı yok. Tarayıcı bir istek atıyor, gerisini kendi yapıyor. GIF'ler base64 gömülü, JavaScript tek blok. Yavaş bağlantıda ilk açılış biraz bekletir, karşılığında hiçbir şey kırılmıyor.</p>
+          </div>
+          <span class="note-row__side mono">2026</span>
+        </li>
+
+        <li class="note-row" data-reveal>
+          <span class="note-row__k mono">android</span>
+          <div class="note-row__body">
+            <h3>İmzalı APK işi release'te başlıyor</h3>
+            <p>Debug APK'yı dağıtmak kolay; asıl mesele keystore, versionCode ve shrinker. Bir kere yanlış keystore'la imzaladım, telefonda güncelleme kabul etmedi. O günden beri keystore yedeği ilk iş.</p>
+          </div>
+          <span class="note-row__side mono">2025</span>
+        </li>
+
+        <li class="note-row" data-reveal>
+          <span class="note-row__k mono">mod</span>
+          <div class="note-row__body">
+            <h3>Config bozulunca oyuncu modu suçluyor</h3>
+            <p>Artık her ayarı okurken varsayılana düşüyorum, hatayı log'a yazıyorum, oyun açılmaya devam ediyor. Sessiz çökmekten iyi.</p>
+          </div>
+          <span class="note-row__side mono">2025</span>
+        </li>
+
+        <li class="note-row" data-reveal>
+          <span class="note-row__k mono">alışkanlık</span>
+          <div class="note-row__body">
+            <h3>Üç günlük işin bir günü ortam kurulumu</h3>
+            <p>Şablonları hazır tutmak en çok zaman kazandıran şey oldu. Boş klasörden başlamıyorum, iskeleti kopyalayıp kurcalıyorum.</p>
+          </div>
+          <span class="note-row__side mono">2024</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
   <section class="section section--contact" id="iletisim">
     <div class="wrap">
       <div class="contact">
         <div class="contact__intro">
-          <p class="sec-num mono">05 — iletişim</p>
+          <p class="sec-num mono">06 — iletişim</p>
           <h2 class="sec-title contact__title">Bir iş, bir fikir ya da<br />sadece bir merhaba. <span class="ital">Yaz.</span></h2>
           <p class="sec-sub">Soru, iş birliği, “bu nasıl yapıldı”... hepsine açığım. Genelde aynı gün dönüyorum.</p>
 
@@ -522,6 +606,22 @@
   </div>
 </footer>
 
+<div class="palette" id="palette" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site içinde ara">
+  <div class="palette__box">
+    <div class="palette__field">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16m6-2 4 4"/></svg>
+      <input class="palette__input" id="paletteInput" type="text" placeholder="bölüm, proje ya da komut ara" autocomplete="off" spellcheck="false" aria-label="Ara" />
+      <kbd class="mono">esc</kbd>
+    </div>
+    <ul class="palette__list" id="paletteList" role="listbox" aria-label="Sonuçlar"></ul>
+    <div class="palette__foot mono">
+      <span>↑↓ gez</span>
+      <span>↵ aç</span>
+      <span>esc kapat</span>
+    </div>
+  </div>
+</div>
+
 <div class="keys" id="keysPanel" aria-hidden="true" role="dialog" aria-label="Klavye kısayolları">
   <div class="keys__box">
     <div class="keys__head">
@@ -529,6 +629,7 @@
       <button class="keys__x" id="keysClose" type="button" aria-label="Kapat">×</button>
     </div>
     <ul class="keys__list mono">
+      <li><kbd>⌘K</kbd><span>site içinde ara</span></li>
       <li><kbd>K</kbd><span>müziği aç / kapat</span></li>
       <li><kbd>L</kbd><span>şimşek çak</span></li>
       <li><kbd>T</kbd><span>başa dön</span></li>

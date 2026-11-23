@@ -24,6 +24,9 @@
 </head>
 <body>
 
+<div class="sbar" id="scrollBar" aria-hidden="true"></div>
+
+
 <div class="bg" aria-hidden="true">
   <img class="bg__gif" src="assets/img/bg-code-rain.gif" alt="" />
   <div class="bg__shade"></div>
@@ -124,6 +127,13 @@
         </p>
 
         <p class="hero__aside mono">not: düşmanlarım prim kasıyor :d</p>
+
+        <p class="hero__live mono" data-reveal>
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="hero__live-k">şu an</span>
+          <span class="hero__live-v" id="liveLine">derleme alıyorum</span>
+          <span class="live-caret" aria-hidden="true"></span>
+        </p>
 
         <div class="hero__actions">
           <a class="btn btn--solid" href="#hikaye">
@@ -278,6 +288,48 @@
           <span class="work__state mono">atölye</span>
         </li>
       </ol>
+
+      <div class="projects">
+        <div class="projects__head">
+          <p class="projects__lbl mono">seçili projeler</p>
+          <p class="projects__note mono">hepsi aynı elden, farklı gecelerde</p>
+        </div>
+
+        <ul class="projects__grid">
+          <li class="project" data-reveal>
+            <div class="project__top">
+              <span class="project__tag mono">java</span>
+              <span class="project__state mono">devam</span>
+            </div>
+            <h3 class="project__name">RaufixTeam Launcher</h3>
+            <p class="project__desc">Ekibin kendi başlatıcısı. Sürüm kontrolü, giriş ve güncelleme akışı tek pencerede; oyuncuya launcher kurcalatmak yok.</p>
+            <ul class="tags mono"><li>Java</li><li>Launcher</li><li>Auth</li></ul>
+            <a class="project__link mono" href="https://github.com/RealRaufixBaba/RaufixTeam-Launcher" target="_blank" rel="noopener">repoya bak <span aria-hidden="true">↗</span></a>
+          </li>
+
+          <li class="project" data-reveal>
+            <div class="project__top">
+              <span class="project__tag mono">pvp</span>
+              <span class="project__state mono">yayında</span>
+            </div>
+            <h3 class="project__name">CPVP Macros</h3>
+            <p class="project__desc">PvP için makro paneli. Tuş atama, zamanlama ve tek tuşla profil değiştirme. Antrenmandan maça geçerken ayar kaybolmuyor.</p>
+            <ul class="tags mono"><li>Macro</li><li>Config</li><li>UI</li></ul>
+            <a class="project__link mono" href="https://github.com/RealRaufixBaba/CPVP-MACROS-PRO" target="_blank" rel="noopener">repoya bak <span aria-hidden="true">↗</span></a>
+          </li>
+
+          <li class="project" data-reveal>
+            <div class="project__top">
+              <span class="project__tag mono">android</span>
+              <span class="project__state mono">yayında</span>
+            </div>
+            <h3 class="project__name">DepremAlarm</h3>
+            <p class="project__desc">Deprem uyarı uygulaması. Arka planda çalışan servis, bildirim ve konum kontrolü. Telefon cebimdeyken de haber versin diye yazdım.</p>
+            <ul class="tags mono"><li>Kotlin</li><li>Servis</li><li>Bildirim</li></ul>
+            <a class="project__link mono" href="https://github.com/RealRaufixBaba/DepremAlarm-" target="_blank" rel="noopener">repoya bak <span aria-hidden="true">↗</span></a>
+          </li>
+        </ul>
+      </div>
 
       <a class="work__all mono" href="https://github.com/RealRaufixBaba" target="_blank" rel="noopener">
         tüm kodlar GitHub'da <span aria-hidden="true">↗</span>
@@ -463,10 +515,29 @@
     <p class="mono">
       <button class="footer__btn" id="boltBtn" type="button">şimşek çak ⚡</button>
       <span class="footer__sep">/</span>
+      <button class="footer__btn" id="keysBtn" type="button" aria-expanded="false" aria-controls="keysPanel">kısayollar</button>
+      <span class="footer__sep">/</span>
       <span>7/24</span>
     </p>
   </div>
 </footer>
+
+<div class="keys" id="keysPanel" aria-hidden="true" role="dialog" aria-label="Klavye kısayolları">
+  <div class="keys__box">
+    <div class="keys__head">
+      <span class="mono">kısayollar</span>
+      <button class="keys__x" id="keysClose" type="button" aria-label="Kapat">×</button>
+    </div>
+    <ul class="keys__list mono">
+      <li><kbd>K</kbd><span>müziği aç / kapat</span></li>
+      <li><kbd>L</kbd><span>şimşek çak</span></li>
+      <li><kbd>T</kbd><span>başa dön</span></li>
+      <li><kbd>H</kbd><span>kısayolları göster</span></li>
+      <li><kbd>Esc</kbd><span>kapat</span></li>
+    </ul>
+    <p class="keys__note mono">kaydırma çubuğu hâlâ en güvenilir yol</p>
+  </div>
+</div>
 
 <script src="assets/js/main.js"></script>
 </body>
